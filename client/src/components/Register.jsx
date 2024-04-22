@@ -1,8 +1,31 @@
 import MainLayout from './Layout/MainLayout'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import loginImage from "../assets/login_bg.jpg"
+import { useState } from 'react'
+import { toast } from 'react-toastify'
+import axios from 'axios'
 
 const Register = () => {
+    const navigate = useNavigate();
+    const [name, setName] = useState("")
+    const [email, setEmail] = useState("")
+    const [password, setPassword] = useState("")
+
+    const handleSignUpButton = async (e)=>{
+        e.preventDefault();
+        try {
+            let res = await axios.post("http://localhost:4000/api/auth/register", {name, email, password});
+            if(res.data.success){
+                toast.success("Account Created Successfully");
+                navigate("/join")
+            }
+            else{
+                toast.error(res.data.message)
+            }
+        } catch (error) {
+            toast.error(error)
+        }
+    }
   return (
     <MainLayout>
         <div className='flex justify-evenly px-4 py-3 md:px-10 md:py-20 flex-wrap'>
@@ -13,6 +36,7 @@ const Register = () => {
             <div className='flex flex-col mt-4'>
                 <label className='text-md md:text-lg font-medium'>Your Name</label>
                     <input 
+                        onChange={((e)=>{setName(e.target.value)})}
                         className='w-full border-2 border-gray-100 rounded-xl p-4 mt-1 bg-transparent'
                         placeholder="Name"
                         type={"text"}
@@ -21,6 +45,7 @@ const Register = () => {
                 <div className='flex flex-col'>
                     <label className='text-md md:text-lg font-medium'>Email</label>
                     <input 
+                        onChange={((e)=>{setEmail(e.target.value)})}
                         className='w-full border-2 border-gray-100 rounded-xl p-4 mt-1 bg-transparent'
                         placeholder="Enter your email"/>
                 </div>
@@ -28,6 +53,7 @@ const Register = () => {
                 <div className='flex flex-col mt-4'>
                 <label className='text-md md:text-lg font-medium'>Password</label>
                     <input 
+                        onChange={((e)=>{setPassword(e.target.value)})}
                         className='w-full border-2 border-gray-100 rounded-xl p-4 mt-1 bg-transparent'
                         placeholder="Password"
                         type={"password"}
@@ -41,7 +67,7 @@ const Register = () => {
                     <button className='font-medium text-base text-violet-500'>Forgot password</button>
                 </div>
                 <div className='mt-8 flex flex-col gap-y-4'>
-                    <button className='active:scale-[.98] active:duration-75 transition-all hover:scale-[1.01]  ease-in-out transform py-4 bg-violet-500 rounded-xl text-white font-bold text-lg'>Sign in</button>
+                    <button className='active:scale-[.98] active:duration-75 transition-all hover:scale-[1.01]  ease-in-out transform py-4 bg-violet-500 rounded-xl text-white font-bold text-lg' onClick={handleSignUpButton}>Sign Up</button>
                     <button 
                         className='flex items-center justify-center gap-2 active:scale-[.98] active:duration-75 transition-all hover:scale-[1.01]  ease-in-out transform py-4  rounded-xl text-gray-700 font-semibold text-lg border-2 border-gray-100 '>
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">

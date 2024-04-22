@@ -2,10 +2,13 @@ import React, { useState } from 'react';
 import { IoMenu } from "react-icons/io5";
 import { IoMdClose } from "react-icons/io";
 import { Link } from 'react-router-dom';
+import { useAuth } from '../contexts/auth-context';
+import { FaRegUserCircle } from "react-icons/fa";
 
 
 const Navbar = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const {auth} = useAuth();
 
     return (
         <header className='bg-white'>
@@ -28,7 +31,7 @@ const Navbar = () => {
                 </div>
 
                 <div className='flex items-center gap-4'>
-                <Link to= "/join"><button className='bg-[#a6c1ee] text-white px-5 py-2 rounded-full hover:bg-[#87acec]'>Join</button></Link>
+              {auth?.token ? <FaRegUserCircle className='text-2xl md:text-3xl text-orange-400 cursor-pointer hover:text-orange-500' /> :  <Link to= "/join"><button className='bg-[#a6c1ee] text-white px-5 py-2 rounded-full hover:bg-[#87acec]'>Join</button></Link>}
                    
                     {isMenuOpen ? (
                         <IoMdClose className='text-xl md:hidden' onClick={() => setIsMenuOpen(false)} />

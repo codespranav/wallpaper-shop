@@ -1,9 +1,37 @@
 /* eslint-disable react/prop-types */
-import React from 'react'
+import React, { useState } from 'react'
 import loginImage from "../assets/login_bg.jpg"
-import { Link } from 'react-router-dom'
-const Login = ({setAuthState}) => {
-    // const 
+import { Link, useNavigate } from 'react-router-dom'
+import axios from 'axios'
+import { toast } from 'react-toastify'
+import { useAuth } from '../contexts/auth-context'
+const Login = () => {
+    const navigate = useNavigate();
+    const [email, setEmail] = useState("")
+    const [password, setPassword] = useState("")
+    const {auth, setAuth} = useAuth();
+    const handleSignInButton = async (e)=>{
+        e.preventDefault();
+        try {
+            let res = await axios.post("http://localhost:4000/api/auth/login", {email, password});
+            if(res.data.success){
+                toast.success("User Logged in");
+                // navigate("/join")
+                console.log(res)
+                setAuth({
+                    ...auth,
+                    user: res.data.user, 
+                    token: res.data.token
+                })
+                await localStorage.setItem("auth", JSON.stringify(res.data))
+            }
+            else{
+                toast.error(res.data.message)
+            }
+        } catch (error) {
+            toast.error(error)
+        }
+    }
   return (
     <>
     <div className='flex justify-evenly px-4 py-3 md:px-10 md:py-20 flex-wrap'>
@@ -11,17 +39,20 @@ const Login = ({setAuthState}) => {
             <h1 className='text-2xl md:text-5xl font-semibold'>Welcome Back</h1>
             <p className='font-medium text-base md:text-lg text-gray-500 mt-4'>Welcome back! Please enter you details.</p>
             <div className='mt-8'>
-                <div className='flex flex-col'>
+            <div className='flex flex-col'>
                     <label className='text-md md:text-lg font-medium'>Email</label>
                     <input 
+                        onChange={((e)=>{setEmail(e.target.value)})}
                         className='w-full border-2 border-gray-100 rounded-xl p-4 mt-1 bg-transparent'
                         placeholder="Enter your email"/>
                 </div>
+          
                 <div className='flex flex-col mt-4'>
                 <label className='text-md md:text-lg font-medium'>Password</label>
                     <input 
+                        onChange={((e)=>{setPassword(e.target.value)})}
                         className='w-full border-2 border-gray-100 rounded-xl p-4 mt-1 bg-transparent'
-                        placeholder="Enter your email"
+                        placeholder="Password"
                         type={"password"}
                     />
                 </div>
@@ -30,10 +61,10 @@ const Login = ({setAuthState}) => {
                         <input  type="checkbox" id='remember'/>
                         <label className='ml-2 m-4 font-medium text-base' htmlFor="remember">Remember for 30 days</label>
                     </div>
-                    <button className='font-medium text-base text-violet-500'>Forgot password</button>
+                   <Link to= "/forgot-password"><button className='font-medium text-base text-violet-500'>Forgot password</button></Link> 
                 </div>
                 <div className='mt-8 flex flex-col gap-y-4'>
-                    <button className='active:scale-[.98] active:duration-75 transition-all hover:scale-[1.01]  ease-in-out transform py-4 bg-violet-500 rounded-xl text-white font-bold text-lg'>Sign in</button>
+                    <button className='active:scale-[.98] active:duration-75 transition-all hover:scale-[1.01]  ease-in-out transform py-4 bg-violet-500 rounded-xl text-white font-bold text-lg' onClick={handleSignInButton}>Sign in</button>
                     <button 
                         className='flex items-center justify-center gap-2 active:scale-[.98] active:duration-75 transition-all hover:scale-[1.01]  ease-in-out transform py-4  rounded-xl text-gray-700 font-semibold text-lg border-2 border-gray-100 '>
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">

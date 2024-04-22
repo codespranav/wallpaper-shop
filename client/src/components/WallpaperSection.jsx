@@ -58,7 +58,9 @@ const WallpaperSection = () => {
                 {data.map((items)=>{
                     return(
                         <div className="pics" key={items.id}>
-                            <img className=" w-full" src= {items.url} alt="image" />
+                            <img className=" w-full" src= {items.url} alt="image" onClick={(()=>{
+                                alert(items.id)
+                            })}/>
                         </div>
                     )
                 })}
