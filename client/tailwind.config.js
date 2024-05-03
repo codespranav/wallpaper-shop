@@ -12,5 +12,10 @@ export default {
     },
   },
   plugins: [],
+  variants: {
+    extend: {
+      display: ["focus-group"]
+    }
+  }
 }
 

@@ -4,18 +4,28 @@ import Join from "./Pages/Join"
 import Register from "./components/Register"
 import ForgotPassword from "./Pages/ForgotPassword"
 import ResetPassword from "./Pages/ResetPassword"
-import { useAuth } from "./contexts/auth-context"
 import IsLoggedIn from "./routes/IsLoggedIn"
+import AdminHome from "./Pages/Admin/AdminHome"
+import Category from "./Pages/Admin/Category"
+import Wallpaper from "./Pages/Admin/Wallpaper"
+import AddWallpaper from "./Pages/Admin/AddWallpaper"
+import AdminRoute from "./routes/AdminRoute"
 const App = () => {
-  const {auth} = useAuth()
   return (
     <Routes>
         <Route path='/' element = {<Home/>}/>
         <Route element = {<IsLoggedIn/>}>
           <Route path='/join' element = {<Join/>}/>
-          <Route path='/register' element = {auth?.token ? <Home/> : <Register/>}/>
+          <Route path='/register' element = {<Register/>}/>
           <Route path='/forgot-password' element = {<ForgotPassword/>}/>
           <Route path='/reset-password/:id/:token' element = {<ResetPassword/>}/>
+        </Route>
+
+        <Route path="/admin" element = {<AdminRoute/>}>
+          <Route path="home" element = {<AdminHome/>}/>
+          <Route path = "admin-category" element = {<Category/>}/>
+          <Route path = "admin-wallpaper" element = {<Wallpaper/>}/>
+          <Route path = "add-wallpaper" element = {<AddWallpaper/>}/>
         </Route>
     </Routes>
   )
