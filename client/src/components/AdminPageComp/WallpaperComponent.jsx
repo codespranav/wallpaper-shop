@@ -16,7 +16,7 @@ const WallpaperComponent = () => {
           title="Add New Wallpaper"
           onClick={()=> {navigate('/admin/add-wallpaper')}}
         >
-          Add New Category
+          Add New Wallpaper
         </button>
       </div>
     </div>

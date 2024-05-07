@@ -1,28 +1,30 @@
-import mongoose from "mongoose";
-import Wallpaper from "../Models/WallpaperModel.js";
+import WallpaperModel from "../Models/WallpaperModel.js";
 
-export const addWallpaper = async (req, res)=>{
+
+export const addWallpaper = async (req, res) => {
     try {
-        const {title, description, category, tags} = req.body;
-        // Check if all required fields are provided
-        if (!title || !description || !category || !tags) {
-            return res.status(400).json({ success: false, message: "All fields are required" });
+        const {fileName, fileDesc} = req.body
+        const file = req.file 
+        const newData = {
+            fileName, fileDesc, file: file.filename
         }
 
-        // Check if the category provided is a valid ObjectId
-        if (!mongoose.Types.ObjectId.isValid(category)) {
-            return res.status(400).json({ success: false, message: "Invalid category ID" });
-        }
-        const newWallpaper = new Wallpaper({
-            title, description, category, tags
-        })
-        await newWallpaper.save();
-        res.json({
-            success:true,
-            message: "Wallpaper added"
-        })
+        console.log(file)
+        const newWallpaper = new WallpaperModel(newData);
+        newWallpaper.save()
+        .then(()=>{res.json("Wallpaper Added")})
     } catch (error) {
-        console.log(error)
-        res.send({success: false, message: "something went wrong"})
+        console.error(error);
+        res.status(500).send({ message: "Internal Server Error" });
     }
-}
+};
+
+export const getWallpaperController = async (req, res) => {
+    try {
+        const wallpapers = await WallpaperModel.find({});
+        res.json(wallpapers);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+};

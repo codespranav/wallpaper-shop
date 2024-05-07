@@ -1,45 +1,60 @@
-import React, { useState } from 'react';
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { useAuth } from "../../contexts/auth-context";
+import {useNavigate} from "react-router-dom"
 
 const UploadImageForm = () => {
-  const [image, setImage] = useState(null);
-  const [formData, setFormData] = useState({
-    name: '',
-    description: '',
-    category: '',
-    tags: ''
-  });
+  const navigate = useNavigate();
+  const {auth} = useAuth();
+  const [image, setImage] = useState()
+  const [fileName, setFileName] = useState();
+  const [fileDesc, setFileDesc] = useState();
+  const [files, setFiles] = useState([]);
+  // const [categories, setCategories] = useState();
+  // const [tags, setTags] = useState();
+  const handleImageChange = (e)=>{
+      e.preventDefault();
+      setImage(e.target.files[0])
+      console.log(e.target.files[0]);
+  }
 
-  const handleInputChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
-  };
-
-  const handleImageChange = (e) => {
-    const selectedImage = e.target.files[0];
-    setImage(selectedImage);
-  };
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e)=>{
     e.preventDefault();
-    // Handle form submission (e.g., send data to server)
-    console.log('Form data:', formData);
-    console.log('Image:', image);
-    // Reset form fields and image state
-    setImage(null);
-    setFormData({
-      name: '',
-      description: '',
-      category: '',
-      tags: ''
-    });
-  };
+    const formData = new FormData();
+    formData.append("image", image)
+    formData.append("fileName", fileName)
+    formData.append("fileDesc", fileDesc)
+    // formData.append("description", description)
+    // formData.append("categories", categories)
+    // formData.append("tags", tags)
+   axios.post("http://localhost:4000/api/wallpaper/add-wallpaper", formData)
+   .then(res=>{
+      console.log(res)
+      navigate("/admin/admin-wallpaper")
+      
+   }).catch(err=>{
+    console.log(err)
+   })
+  }
 
+
+  const fetchData = async ()=>{
+    try {
+        let res = await axios.get("http://localhost:4000/api/wallpaper/get-wallpaper")
+        setFiles(res.data)
+        console.log(res)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  useEffect(()=>{
+    fetchData();
+  }, [])
   return (
-    <div className="max-w-lg mx-auto mt-8 p-6 bg-white rounded-lg shadow-lg">
+    <div className='bg-green-500 p-4'>
+    <div className="max-w-lg mx-auto p-10 bg-white rounded-lg shadow-lg">
       <h2 className="text-2xl font-semibold mb-6 text-center">Upload Image</h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-4" encType="multipart/form-data">
         <div>
           <label className="block text-sm font-medium mb-1" htmlFor="image">
             Choose Image:
@@ -47,6 +62,7 @@ const UploadImageForm = () => {
           <input
             className="border rounded-md p-2 w-full"
             type="file"
+            accept=".png, .jpg, .jpeg"
             id="image"
             onChange={handleImageChange}
           />
@@ -60,8 +76,8 @@ const UploadImageForm = () => {
             type="text"
             id="name"
             name="name"
-            value={formData.name}
-            onChange={handleInputChange}
+            value={fileName}
+            onChange={((e)=>{setFileName(e.target.value)})}
           />
         </div>
         <div>
@@ -72,11 +88,11 @@ const UploadImageForm = () => {
             className="border rounded-md p-2 w-full"
             id="description"
             name="description"
-            value={formData.description}
-            onChange={handleInputChange}
+            value={fileDesc}
+            onChange={((e)=>{setFileDesc(e.target.value)})}
           />
         </div>
-        <div>
+        {/* <div>
           <label className="block text-sm font-medium mb-1" htmlFor="category">
             Category:
           </label>
@@ -85,8 +101,8 @@ const UploadImageForm = () => {
             type="text"
             id="category"
             name="category"
-            value={formData.category}
-            onChange={handleInputChange}
+            value={categories}
+            onChange={((e)=>{setCategories(e.target.value)})}
           />
         </div>
         <div>
@@ -98,10 +114,13 @@ const UploadImageForm = () => {
             type="text"
             id="tags"
             name="tags"
-            value={formData.tags}
-            onChange={handleInputChange}
+            value={tags}
+            onChange={((e)=>{setTags(e.target.value)})}
           />
-        </div>
+        </div> */}
+
+
+
         <div className="flex justify-center">
           <button
             type="submit"
@@ -109,9 +128,20 @@ const UploadImageForm = () => {
           >
             Submit
           </button>
+          {/* <img src={""} alt="" /> */}
         </div>
       </form>
     </div>
+    <div>
+      {files.map((items)=> (
+        <div key={items._id}>
+          <h1>Hello</h1>
+            <img src={`http://localhost:4000/${items.file}`} alt="" />
+            <img src="http://localhost:4000/a.png" alt="" />
+        </div>
+      ))}
+    </div>
+  </div>
   );
 };
 
