@@ -4,6 +4,7 @@ import loginImage from "../assets/login_bg.jpg"
 import { useState } from 'react'
 import { toast } from 'react-toastify'
 import axios from 'axios'
+import { BASE_URL } from '../../helper/helper'
 
 const Register = () => {
     const navigate = useNavigate();
@@ -14,7 +15,7 @@ const Register = () => {
     const handleSignUpButton = async (e)=>{
         e.preventDefault();
         try {
-            let res = await axios.post("http://localhost:4000/api/auth/register", {name, email, password});
+            let res = await axios.post(`${BASE_URL}/api/auth/register`, {name, email, password});
             if(res.data.success){
                 toast.success("Account Created Successfully");
                 navigate("/join")

@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { IoMenu } from "react-icons/io5";
 import { IoMdClose } from "react-icons/io";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/auth-context';
 import { FaRegUserCircle } from "react-icons/fa";
-
+import Logo from "../assets/walify_logo.png"
 
 const Navbar = () => {
+    const navigate = useNavigate();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const {auth} = useAuth();
 
@@ -14,7 +15,7 @@ const Navbar = () => {
         <header className='bg-white'>
             <nav className='flex items-center justify-between md:w-[92%] mx-auto relative p-3 md:p-0 min-h-[11vh]'>
                 <div>
-                   <Link to= "/"><img className='w-16' src="https://cdn-icons-png.flaticon.com/512/5968/5968204.png" alt="Site Logo" /></Link>
+                   <Link to= "/"><img className='w-32' src={Logo} alt="Site Logo" /></Link>
                 </div>
 
                 <div className={`md:static p-3 absolute top-[100%] min-h-[20vh] md:min-h-0 md:mt-0 w-full bg-white left-0 ${isMenuOpen ? "" : "hidden"} md:block`} style={
@@ -31,7 +32,13 @@ const Navbar = () => {
                 </div>
 
                 <div className='flex items-center gap-4'>
-              {auth?.token ? <FaRegUserCircle className='text-2xl md:text-3xl text-orange-400 cursor-pointer hover:text-orange-500' /> :  <Link to= "/join"><button className='bg-[#a6c1ee] text-white px-5 py-2 rounded-full hover:bg-[#87acec]'>Join</button></Link>}
+              {auth?.token ? <FaRegUserCircle className='text-2xl md:text-3xl text-orange-400 cursor-pointer hover:text-orange-500' onClick={()=>{
+                if(auth?.user?.role == 1){
+                    navigate('/admin/home')
+                }else{
+                    navigate('/')
+                }
+              }}/> :  <Link to= "/join"><button className='bg-[#a6c1ee] text-white px-5 py-2 rounded-full hover:bg-[#87acec]'>Join</button></Link>}
                    
                     {isMenuOpen ? (
                         <IoMdClose className='text-xl md:hidden' onClick={() => setIsMenuOpen(false)} />

@@ -2,6 +2,8 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useAuth } from "../../contexts/auth-context";
 import {useNavigate} from "react-router-dom"
+import { BASE_URL } from "../../../helper/helper.jsx";
+
 
 const UploadImageForm = () => {
   const navigate = useNavigate();
@@ -9,7 +11,7 @@ const UploadImageForm = () => {
   const [image, setImage] = useState()
   const [fileName, setFileName] = useState();
   const [fileDesc, setFileDesc] = useState();
-  const [files, setFiles] = useState([]);
+ 
   // const [categories, setCategories] = useState();
   // const [tags, setTags] = useState();
   const handleImageChange = (e)=>{
@@ -27,7 +29,7 @@ const UploadImageForm = () => {
     // formData.append("description", description)
     // formData.append("categories", categories)
     // formData.append("tags", tags)
-   axios.post("http://localhost:4000/api/wallpaper/add-wallpaper", formData)
+   axios.post(`${BASE_URL}/api/wallpaper/add-wallpaper`, formData)
    .then(res=>{
       console.log(res)
       navigate("/admin/admin-wallpaper")
@@ -38,22 +40,11 @@ const UploadImageForm = () => {
   }
 
 
-  const fetchData = async ()=>{
-    try {
-        let res = await axios.get("http://localhost:4000/api/wallpaper/get-wallpaper")
-        setFiles(res.data)
-        console.log(res)
-    } catch (error) {
-      console.log(error)
-    }
-  }
-  useEffect(()=>{
-    fetchData();
-  }, [])
+
   return (
     <div className='bg-green-500 p-4'>
     <div className="max-w-lg mx-auto p-10 bg-white rounded-lg shadow-lg">
-      <h2 className="text-2xl font-semibold mb-6 text-center">Upload Image</h2>
+      <h2 className="text-2xl font-semibold mb-6 text-center">Upload Images</h2>
       <form onSubmit={handleSubmit} className="space-y-4" encType="multipart/form-data">
         <div>
           <label className="block text-sm font-medium mb-1" htmlFor="image">
@@ -133,13 +124,6 @@ const UploadImageForm = () => {
       </form>
     </div>
     <div>
-      {files.map((items)=> (
-        <div key={items._id}>
-          <h1>Hello</h1>
-            <img src={`http://localhost:4000/${items.file}`} alt="" />
-            <img src="http://localhost:4000/a.png" alt="" />
-        </div>
-      ))}
     </div>
   </div>
   );

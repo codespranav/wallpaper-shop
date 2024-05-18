@@ -2,6 +2,8 @@ import { useState } from 'react'
 import MainLayout from "../components/Layout/MainLayout"
 import axios from "axios"
 import { Link, useNavigate, useParams } from 'react-router-dom'
+import { BASE_URL } from '../../helper/helper'
+
 const ResetPassword = () => {
     const navigate = useNavigate();
     const [password, setPassword] = useState("");
@@ -16,7 +18,7 @@ const ResetPassword = () => {
                 alert("Password and confirm password should to be same")
             }
 
-            axios.post(`http://localhost:4000/api/auth/reset-password/${id}/${token}`, { password })
+            axios.post(`${BASE_URL}/api/auth/reset-password/${id}/${token}`, { password })
                 .then(res => {
                     if (res.data.success) {
                         navigate("/join");

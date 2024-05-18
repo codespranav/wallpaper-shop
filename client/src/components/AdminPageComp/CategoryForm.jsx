@@ -9,6 +9,8 @@ import { FaEye, FaPencil, FaTrash } from "react-icons/fa6";
 import { toast } from "react-toastify";
 import { useAuth } from "../../contexts/auth-context";
 import FormBox from "./FormBox";
+import { BASE_URL } from "../../../helper/helper.jsx";
+
 
 const CategoryForm = () => {
   const [isBoxOpen, setIsBoxOpen] = useState(false);
@@ -28,7 +30,7 @@ const CategoryForm = () => {
     e.preventDefault();
     try {
       let res = await axios.put(
-        `http://localhost:4000/api/category/edit-category/${selected._id}`,
+        `${BASE_URL}/api/category/edit-category/${selected._id}`,
         {
           editedName: editedCatName,
           editedDescription: editedCatDesc
@@ -55,7 +57,7 @@ const CategoryForm = () => {
     try {
       // fetching data
       let {data} = await axios.get(
-        "http://localhost:4000/api/category/view-category"
+        `${BASE_URL}/api/category/view-category`
       );
       await setCategories(data.data); // Use res.data to access the response data
       console.log(data.data);
@@ -68,7 +70,7 @@ const CategoryForm = () => {
       e.preventDefault();
       try {
         let res = await axios.post(
-          `http://localhost:4000/api/category/add-category/`,
+          `${BASE_URL}/api/category/add-category/`,
           {
             name, description
           },
@@ -93,7 +95,7 @@ const CategoryForm = () => {
 
   const handleCatDelete = async ()=> {
     try {
-      let res = await axios.delete(`http://localhost:4000/api/category/delete-category/${selected._id}`, {
+      let res = await axios.delete(`${BASE_URL}/api/category/delete-category/${selected._id}`, {
         headers: {
           Authorization: auth.token
         }

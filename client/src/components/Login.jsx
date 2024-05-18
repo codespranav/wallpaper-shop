@@ -5,6 +5,8 @@ import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { toast } from 'react-toastify'
 import { useAuth } from '../contexts/auth-context'
+import { BASE_URL } from '../../helper/helper'
+
 const Login = () => {
     const navigate = useNavigate();
     const [email, setEmail] = useState("")
@@ -13,7 +15,7 @@ const Login = () => {
     const handleSignInButton = async (e)=>{
         e.preventDefault();
         try {
-            let res = await axios.post("http://localhost:4000/api/auth/login", {email, password});
+            let res = await axios.post(`${BASE_URL}/api/auth/login`, {email, password});
             if(res.data.success){
                 toast.success("User Logged in");
                 // navigate("/join")

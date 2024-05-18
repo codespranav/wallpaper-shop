@@ -2,6 +2,8 @@ import { useState } from 'react'
 import MainLayout from "../components/Layout/MainLayout"
 import axios from "axios"
 import { Link, useNavigate } from 'react-router-dom'
+import { BASE_URL } from '../../helper/helper'
+
 const ForgotPassword = () => {
     const navigate = useNavigate();
     const [email, setEmail] = useState("");
@@ -10,7 +12,7 @@ const ForgotPassword = () => {
         try {
             e.preventDefault();
             console.log("clicked");
-            axios.post("http://localhost:4000/api/auth/forgot-password", { email })
+            axios.post(`${BASE_URL}/api/auth/forgot-password`, { email })
                 .then(res => {
                     if (res.data.success) {
                         navigate("/join");

@@ -1,72 +1,77 @@
-import "../gallery.css"
-import {Select} from "antd"
+import { useEffect, useState } from "react";
+import "../gallery.css";
+import { Select } from "antd";
+import axios from "axios";
+import { BASE_URL } from '../../helper/helper';
+import DownloadImage from "./DownloadImage";
 
 const WallpaperSection = () => {
-    const data = [
-        {
-            id: 1,
-            url: "https://images.pexels.com/photos/19762800/pexels-photo-19762800/free-photo-of-man-in-white-shirt-and-shorts-sitting-on-chair-in-spotlight.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load"
-        }, 
-        {
-            id: 2,
-            url: "https://images.pexels.com/photos/2664810/pexels-photo-2664810.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load"
-        }, 
-        {
-            id: 3,
-            url: "https://images.pexels.com/photos/20767754/pexels-photo-20767754/free-photo-of-two-white-envelopes-with-a-string-tied-to-them.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load"
-        }, 
-        {
-            id: 4,
-            url: "https://images.pexels.com/photos/21011577/pexels-photo-21011577/free-photo-of-two-people-in-traditional-clothing-standing-next-to-each-other.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load"
-        }, 
-        {
-            id: 5,
-            url: "https://images.pexels.com/photos/21338240/pexels-photo-21338240/free-photo-of-woman-posing-in-fur-in-shadow.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-        }, 
-        
+  const [open, setOpen] = useState(false);
+  const [files, setFiles] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState("trending");
+  const [fileLink, setFileLink] = useState("");
+  const [fileName, setFileName] = useState("");
 
-    ]
-    return (
-        <div className="mt-28 px-7 py-0">
-        <div className="flex justify-between flex-wrap">
-            <h1 className=" text-2xl text-gray-800 font-bold mb-8">Free Wallpaper Images</h1>
-            <Select
-    labelInValue
-    defaultValue={{
-      value: 'Trending',
-      label: 'Trending',
-    }}
-    style={{
-      width: 120,
-      color: "black",
-      fontSize: "21px"
-    }}
-    onChange={"handleChange"}
-    options={[
-      {
-        value: 'trending',
-        label: 'Trending',
-      },
-      {
-        value: 'new',
-        label: 'New',
-      },
-    ]}
-  />
-        </div>
-        <div className="gallery">
-                {data.map((items)=>{
-                    return(
-                        <div className="pics" key={items.id}>
-                            <img className=" w-full" src= {items.url} alt="image" onClick={(()=>{
-                                alert(items.id)
-                            })}/>
-                        </div>
-                    )
-                })}
-        </div>
-        </div>
-    );
-}
+  const showDrawer = (link, name) => {
+    setOpen(true);
+    setFileLink(link)
+    setFileName(name)
+  };
+
+  const handleCloseDrawer = () => {
+    setOpen(false);
+  };
+
+  const fetchData = async (category) => {
+    try {
+      let res = await axios.get(`${BASE_URL}/api/wallpaper/get-wallpaper`, {
+        params: { category }
+      });
+      setFiles(res.data);
+      console.log(res);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData(selectedCategory);
+  }, [selectedCategory]);
+
+  const handleChange = (value) => {
+    setSelectedCategory(value.value);
+  };
+
+  return (
+    <div className="mt-28 px-7 py-0">
+      <div className="flex justify-between flex-wrap">
+        <h1 className="text-2xl text-gray-800 font-bold mb-8">Free Wallpaper Images</h1>
+        <Select
+          labelInValue
+          defaultValue={{ value: 'trending', label: 'Trending' }}
+          style={{ width: 120, color: "black", fontSize: "21px" }}
+          onChange={handleChange}
+          options={[
+            { value: 'trending', label: 'Trending' },
+            { value: 'new', label: 'New' },
+          ]}
+        />
+      </div>
+      <div className="gallery">
+        {files.map((item) => (
+          <div className="pics" key={item._id}>
+            <img
+              className="w-full hover:opacity-85 transition-all"
+              src={`${BASE_URL}/${item.file}`}
+              alt={item.fileName}
+              onClick={(()=>{showDrawer(`${BASE_URL}/${item.file}`, item.file); })}
+            />
+            {open && <DownloadImage open={open} setOpen={setOpen} imageLink = {fileLink} fileName = {fileName}/>}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
 
 export default WallpaperSection;

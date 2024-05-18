@@ -6,7 +6,7 @@ import AuthRoute from "./Routes/AuthRoute.js"
 import WallpaperRoute from "./Routes/WallpaperRoute.js"
 import CategoryRoute from "./Routes/CategoryRoute.js"
 dotenv.config();
-const port = process.env.PORT || 8000
+const port = process.env.PORT 
 const app = express();
 
 app.use(cors());
