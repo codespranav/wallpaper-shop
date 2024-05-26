@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import "../gallery.css";
-import { Select } from "antd";
+import { Select, Spin } from "antd"; // Import Spin component for loading indicator
 import axios from "axios";
 import { BASE_URL } from '../../helper/helper';
 import DownloadImage from "./DownloadImage";
@@ -8,14 +8,14 @@ import DownloadImage from "./DownloadImage";
 const WallpaperSection = () => {
   const [open, setOpen] = useState(false);
   const [files, setFiles] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState("trending");
   const [fileLink, setFileLink] = useState("");
   const [fileName, setFileName] = useState("");
+  const [loading, setLoading] = useState(true); // State to track loading status
 
   const showDrawer = (link, name) => {
     setOpen(true);
-    setFileLink(link)
-    setFileName(name)
+    setFileLink(link);
+    setFileName(name);
   };
 
   const handleCloseDrawer = () => {
@@ -24,22 +24,24 @@ const WallpaperSection = () => {
 
   const fetchData = async (category) => {
     try {
+      setLoading(true); // Set loading to true before fetching data
       let res = await axios.get(`${BASE_URL}/api/wallpaper/get-wallpaper`, {
         params: { category }
       });
       setFiles(res.data);
-      console.log(res);
+      setLoading(false); // Set loading to false after fetching data
     } catch (error) {
       console.log(error);
+      setLoading(false); // Set loading to false in case of error
     }
   };
 
   useEffect(() => {
-    fetchData(selectedCategory);
-  }, [selectedCategory]);
+    fetchData();
+  }, []);
 
   const handleChange = (value) => {
-    setSelectedCategory(value.value);
+    // setSelectedCategory(value.value);
   };
 
   return (
@@ -58,17 +60,21 @@ const WallpaperSection = () => {
         />
       </div>
       <div className="gallery">
-        {files.map((item) => (
-          <div className="pics" key={item._id}>
-            <img
-              className="w-full hover:opacity-85 transition-all"
-              src={`${BASE_URL}/${item.file}`}
-              alt={item.fileName}
-              onClick={(()=>{showDrawer(`${BASE_URL}/${item.file}`, item.file); })}
-            />
-            {open && <DownloadImage open={open} setOpen={setOpen} imageLink = {fileLink} fileName = {fileName}/>}
-          </div>
-        ))}
+        {loading ? ( // Render loading indicator if loading is true
+          <Spin size="large" />
+        ) : (
+          files.map((item) => (
+            <div className="pics" key={item._id}>
+              <img
+                className="w-full hover:opacity-85 transition-all"
+                src={`${BASE_URL}/${item.file}`}
+                alt={item.fileName}
+                onClick={() => { showDrawer(`${BASE_URL}/${item.file}`, item.file); }}
+              />
+              {open && <DownloadImage open={open} setOpen={setOpen} imageLink={fileLink} fileName={fileName} />}
+            </div>
+          ))
+        )}
       </div>
     </div>
   );

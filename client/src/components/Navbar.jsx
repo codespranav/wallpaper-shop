@@ -24,8 +24,8 @@ const Navbar = () => {
 
 
                     <ul className='flex md:flex-row flex-col items-start md:items-center justify-center md:gap-[4vw] gap-8'>
-                        <li><a className='hover:text-gray-500 cursor-pointer' href="#products">Products</a></li>
-                        <li><a className='hover:text-gray-500 cursor-pointer' href="#solution">Solution</a></li>
+                        <li><a className='hover:text-gray-500 cursor-pointer' href="#products">Explore</a></li>
+                        <li><a className='hover:text-gray-500 cursor-pointer' href="#solution">License</a></li>
                         <li><a className='hover:text-gray-500 cursor-pointer' href="#resources">Resources</a></li>
                         <li><a className='hover:text-gray-500 cursor-pointer' href="#developers">Developers</a></li>
                     </ul>
